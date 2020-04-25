@@ -44,6 +44,7 @@ td {
   border-radius:4px;
   border:1px solid #1b546d;
   font-family:Verdana;
+  margin-bottom:20px;
 }
 
 #input {
@@ -62,6 +63,12 @@ td {
     margin: 3px 0;
     direction: inherit;
     padding: 7px;
+    direction: rtl;
+    text-align: right;
+    font-family: tahoma;
+    color: #111;
+    word-wrap: break-word;
+    line-height: 34px;
 }
 
 #nav {
@@ -118,4 +125,10 @@ body {
     width:100%;
 }
 
+input#message {
+    font-family: Tahoma;
+    font-size: 14px;
+}
+
 /* ./New css */
+
