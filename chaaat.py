@@ -5,11 +5,12 @@ import tornado.locks
 import tornado.web
 import os.path
 import uuid
+import requests
+import json
+import pycurl
+import ast
 
 from tornado.options import define, options, parse_command_line
-
-
-
 
 
 
@@ -62,7 +63,7 @@ class MainHandler(BaseHandler):
         if not self.current_user:
             self.redirect("/login")
             return
-        name = tornado.escape.xhtml_escape(self.current_user)
+        #name = tornado.escape.xhtml_escape(self.current_user)
         #print ("Hello, " + name)
         self.render("index.html", messages=global_message_buffer.cache)
 
@@ -73,26 +74,49 @@ class LoginHandler(BaseHandler):
         self.set_secure_cookie("user", self.get_argument("name"))
         self.redirect("/")
 
+##########username #########
+class UsernameFinder(BaseHandler):
+
+    def find_username(self):
+        api_url_base = "https://freefeed.net"
+        read_my_info = "/v2/users/whoami"
+        api_token=tornado.escape.xhtml_escape(self.current_user)
+        headers = {'x-authentication-token':api_token}
+        response = requests.get(api_url_base+read_my_info,headers=headers)
+        content= response.json()
+        for k,v in content.items():
+            #print(k,v)
+            if k == 'users':
+                for i,j in v.items():
+                    if i=='username':
+                        print (j)
+                        return(j)
+    
+    # find screan name  function
+    def find_screenName(self):
+        api_url_base = "https://freefeed.net"
+        read_my_info = "/v2/users/whoami"
+        api_token=tornado.escape.xhtml_escape(self.current_user)
+        headers = {'x-authentication-token':api_token}
+        response = requests.get(api_url_base+read_my_info,headers=headers)
+        content= response.json()
+        for k,v in content.items():
+            if k == 'users':
+                for i,j in v.items():
+                    if i=='screenName':
+                        return(j)    
 
 
-########################################
-########################################
-#
 
-
-
+#######################New message######
 class MessageNewHandler(BaseHandler):
     """Post a new message to the chat room."""
-    def post(self):
-        name = tornado.escape.xhtml_escape(self.current_user)
-        print ("Hello, " + name)
+    def post(self): 
+        
+        name = UsernameFinder.find_screenName(self)
         body= self.get_argument("body")
-        if (len(body) == 0):
-            message = {"id": str(uuid.uuid4()), "body": body}
-        else :
-            message = {"id": str(uuid.uuid4()), "body": name+": "+body}
-        # render_string() returns a byte string, which is not supported
-        # in json, so we must convert it to a character string.
+        message = {"id": str(uuid.uuid4()), "body": name+": "+body}
+        
         message["html"] = tornado.escape.to_unicode(
             self.render_string("message.html", message= message)
         )

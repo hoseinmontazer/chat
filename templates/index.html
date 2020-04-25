@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
@@ -9,28 +9,36 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <title>Chat Demo</title>
     <link rel="stylesheet" href="{{ static_url("chat.css") }}" type="text/css">
-  </head>
+    
+</head>
   <body>
-    <div id="body">
-      <div id="inbox">
-        {% for message in messages %}
-          {% module Template("message.html", message=message) %}
-        {% end %}
+      <div id="body" class="container">
+          <div class="header">
+              <svg viewBox="-1.5 529.754 603 71.746" preserveAspectRatio="none">
+                  <path fill="#154b63" d=" M 0 560 Q 66.018 533.115 153.816 571.235 C 241.613 609.355 293.526 571.416 310 560 C 346.774 534.516 402.903 510.645 450 560 Q 497.097 609.355 600 560 L 600 600 L 0 600 L 0 560 Z "></path>
+              </svg>
+          </div>
+          <div id="inbox">
+              {% for message in messages %}
+              {% module Template("message.html", message=message) %}
+              {% end %}
+          </div>
+          <div id="input">
+              <form action="/a/message/new" method="post" id="messageform">
+                  <table>
+                      <tr>
+                          <td><input type="text" name="body" id="message" class="form-control"></td>
+                          <td class="post-btn-td">
+                              <input class="btn btn-success" type="submit" value="{{ _("Post") }}">
+                              <input type="hidden" name="next" value="{{ request.path }}">
+                              {% module xsrf_form_html() %}
+                          </td>
+                      </tr>
+                  </table>
+              </form>
+          </div>
       </div>
-      <div id="input">
-        <form action="/a/message/new" method="post" id="messageform">
-          <table>
-            <tr>
-              <td><input type="text" name="body" id="message" style="width:500px"></td>
-              <td style="padding-left:5px">
-                <input type="submit" value="{{ _("Post") }}">
-                <input type="hidden" name="next" value="{{ request.path }}">
-                {% module xsrf_form_html() %}
-              </td>
-            </tr>
-          </table>
-        </form>
-      </div>
-    <script src="{{ static_url("chat.js") }}" type="text/javascript"></script>
-  </body>
+          <script src="{{ static_url("chat.js") }}" type="text/javascript"></script>
+       
+</body>
 </html>
