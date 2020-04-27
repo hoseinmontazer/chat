@@ -14,11 +14,12 @@
  * under the License.
  */
 
-/*
-body { 
-  background: ;
+
+
+html, body {
+    margin:0;
+    padding:0;
 }
-*/
 body,
 input {
   font-family: sans-serif;
@@ -37,28 +38,55 @@ td {
 }
 
 #body {
-  /*position: absolute;
+    /*position: absolute;
   bottom: 80px;
   left: 25%;*/
-  margin-top:25px;
-  border-radius:4px;
-  border:1px solid #1b546d;
-  font-family:Verdana;
-  margin-bottom:20px;
+    margin-top: 25px;
+    border-radius: 4px;
+    border: 1px solid #1b546d;
+    font-family: Verdana;
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative;
+    padding:0;
 }
+    #body .main-content {
+        height: 620px;
+    }
 
+        #body .main-content .messages-box {
+            /*max-height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;*/
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #body .main-content .users-list {
+            background-color: #eee;
+        }
+
+#inbox {
+    max-height: 550px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
 #input {
-  margin-top: 0.17em;
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
+    margin-top: 0.17em;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    height: 50px;
+    margin-bottom: 0;
+    bottom: 25px;
+    width: 100%;
 }
 
 #inbox .message {
     padding-top: 0.25em;
     border: 1px solid #d7d5d5;
     background-color: #f1f1f1;
-    border-radius: 5px;
+    border-radius: 4px;
     padding: 3px;
     margin: 3px 0;
     direction: inherit;
@@ -69,11 +97,31 @@ td {
     color: #111;
     word-wrap: break-word;
     line-height: 34px;
+    margin-right: 56px;
+    /*display: flex;*/
+    display: block;
+    min-height: 52px;
+    margin-bottom: 10px;
+    overflow:hidden;
 }
-
+#inbox .avatar {
+    border-radius: 4px;
+    float: right;
+    top: 0;
+    margin-top: 0;
+    display: flex;
+    border: 1px solid #eee;
+    margin-bottom:10px;
+}
+#inbox .message .user {
+    color: #1f5074;
+    padding-left: 10px;
+    float:right;
+    width:100%;
+}
 #nav {
-  float: right;
-  z-index: 99;
+    float: right;
+    z-index: 99;
 }
 
 * {
@@ -90,6 +138,7 @@ body {
 body {
     background: #f5f5f5;
 }
+
 .header {
     background-color: #1b546d;
     margin-right: -16px;
@@ -97,9 +146,9 @@ body {
     margin-top: -1px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    color:#fff;
-    margin-bottom:15px;
-    padding-top:10px;
+    color: #fff;
+    margin-bottom: 15px;
+    padding-top: 10px;
 }
 
 .header svg {
@@ -129,6 +178,8 @@ input#message {
     font-family: Tahoma;
     font-size: 14px;
 }
+
+
 
 /* ./New css */
 
