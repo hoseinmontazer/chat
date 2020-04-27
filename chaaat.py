@@ -9,6 +9,9 @@ import requests
 import json
 import pycurl
 import ast
+from PIL import Image
+import sys
+
 
 from tornado.options import define, options, parse_command_line
 
@@ -107,23 +110,42 @@ class UsernameFinder(BaseHandler):
                         return(j)    
 
 
+######## find avatatr  function
+    def find_Avatr(self):
+        api_url_base = "https://freefeed.net"
+        read_my_info = "/v2/users/whoami"
+        api_token=tornado.escape.xhtml_escape(self.current_user)
+        headers = {'x-authentication-token':api_token}        
+        response = requests.get(api_url_base+read_my_info,headers=headers)
+        content= response.json()
+        for k,v in content.items():
+            #print(k,v)
+            if k == 'users':
+                for i,j in v.items():
+                    if i=='profilePictureLargeUrl':
+                        return(j)
+
+
 
 #######################New message######
 class MessageNewHandler(BaseHandler):
     """Post a new message to the chat room."""
     def post(self): 
-        
+        img_url = UsernameFinder.find_Avatr(self)
         name = UsernameFinder.find_screenName(self)
         body= self.get_argument("body")
-        message = {"id": str(uuid.uuid4()), "body": name+": "+body}
+        message = {"id": str(uuid.uuid4()), "img_url": str(img_url) ,"name": name ,"body":body}
+        #message = {"id": str(uuid.uuid4()), "img_url":img_url ,"name": name ,"body":body}
         
         message["html"] = tornado.escape.to_unicode(
             self.render_string("message.html", message= message)
         )
+        
         if self.get_argument("next", None):
             self.redirect(self.get_argument("next"))
         else:
             #name = tornado.escape.xhtml_escape(self.current_user)
+            print(type(message))
             self.write(message)
         global_message_buffer.add_message(message)
 

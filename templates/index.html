@@ -32,10 +32,14 @@
                   </table>
               </form>
           </div>
-          <div id="inbox">
-              {% for message in messages %}
-              {% module Template("message.html", message=message) %}
-              {% end %}
+          <div id="inbox" class="message" >
+              <table>
+                  <tr>
+                      {% for message in messages %}
+                            {% module Template("message.html", message=message) %}
+                    {% end %}   
+                  </tr>  
+              </table>
           </div>
 
       </div>
