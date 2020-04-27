@@ -134,6 +134,12 @@ class MessageNewHandler(BaseHandler):
         img_url = UsernameFinder.find_Avatr(self)
         name = UsernameFinder.find_screenName(self)
         body= self.get_argument("body")
+        if not img_url:
+            img_url = "https://raw.githubusercontent.com/FreeFeed/freefeed-react-client/e8b6d86f227cc66903e7a06cd9e06cf2e7af3242/assets/images/default-userpic.svg"
+        if  name == None :
+            name =tornado.escape.xhtml_escape(self.current_user)
+
+
         message = {"id": str(uuid.uuid4()), "img_url": str(img_url) ,"name": name ,"body":body}
         #message = {"id": str(uuid.uuid4()), "img_url":img_url ,"name": name ,"body":body}
         
