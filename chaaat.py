@@ -110,20 +110,31 @@ class LoginHandler(BaseHandler):
     def get(self):
         self.render("login.html",error='',)
     def post(self):
-        username = self.get_argument("name")
-        print(username)
-        password = self.get_argument("password")
-        sql= "SELECT * FROM `user` WHERE `name` = %s "
-        test = db.coneectdb()
-        mycursor = test.cursor()
-        mycursor.execute(sql, (username,))
-        myresult = mycursor.fetchall()
-        for x in myresult:
-            if x[0] == username and x[1] == password :
-                self.set_secure_cookie("user", self.get_argument("name"))
-                self.redirect("/")
+        id = self.get_argument("id")
+        print( id )
+        if id == "1":
+            username = self.get_argument("name")
+            password = self.get_argument("password")           
+            sql= "SELECT * FROM `user` WHERE `name` = %s "
+            test = db.coneectdb()
+            mycursor = test.cursor()
+            mycursor.execute(sql, (username,))
+            myresult = mycursor.fetchall()
+            for x in myresult:
+                if x[0] == username and x[1] == password :
+                    self.set_secure_cookie("user", self.get_argument("name"))
+                    self.redirect("/")
 
-            self.render("login.html", error = "incorrect username or password")
+                self.render("login.html", error = "incorrect username or password")
+        if id == "2":
+            secret = self.get_argument("secret")
+            self.set_secure_cookie("user", self.get_argument("secret"))
+            self.redirect("/")
+
+
+
+
+
 
 ##########username #########
 class UsernameFinder(BaseHandler):
