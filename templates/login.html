@@ -8,15 +8,24 @@
   <body>
         <div class="login">
             <h2>Free chatroom</h2>
-            <form action="/login" method="post">
+            <form action="/login"   method="post">
                 <div class="input-group">
                     <input type="text" name="name" required="required">
                     <span>Username</span>
                 </div>
                 <div class="input-group">
-                    <input type="submit" value="Sign in">
+                    <input type="text" name="password" required="required">
+                    <span>Password</span>
                 </div>
             </form>
+            <div class="input-group">
+                <input type="submit"  value="Sign in">
+            </div>
+            <div> {{ error }}  </div>
+
+            <div class="input-group">
+                OR Login with secret FreeFeed
+            </div>
             <a href="#">Forgot Password<span>Click Here</span></a>
         </div>
     </body>

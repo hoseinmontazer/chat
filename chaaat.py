@@ -11,7 +11,7 @@ import pycurl
 import ast
 from PIL import Image
 import sys
-
+import mysql.connector
 
 from tornado.options import define, options, parse_command_line
 
@@ -22,11 +22,21 @@ define("debug", default=True, help="run in debug mode")
 #####################################
 
 
+class db:
+    def coneectdb():
+        mydb = mysql.connector.connect(
+        host="127.0.0.1",
+        user="hoseinm",
+        passwd="123456",
+        database="chat",
+        auth_plugin="mysql_native_password"
+        )
+        return mydb
+
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
-        return self.get_secure_cookie("user")
-
-
+        return  self.get_secure_cookie("user")
+        
 
 
 class MessageBuffer(object):
@@ -64,18 +74,56 @@ global_message_buffer = MessageBuffer()
 class MainHandler(BaseHandler):
     def get(self):
         if not self.current_user:
-            self.redirect("/login")
+            self.redirect("/register")
             return
         #name = tornado.escape.xhtml_escape(self.current_user)
         #print ("Hello, " + name)
         self.render("index.html", messages=global_message_buffer.cache)
+        
+
+class RegisterHandler(BaseHandler):
+    def get(self):
+        self.render("register.html",error='')
+    def post(self):
+        username = self.get_argument("name")
+        password = self.get_argument("password")
+        sql= "SELECT * FROM `user` WHERE `name` = %s "
+        test = db.coneectdb()
+        mycursor = test.cursor()
+        mycursor.execute(sql, (username,))
+        myresult = mycursor.fetchall()
+        for x in myresult:
+            for y in x:
+                if y == username :
+                    self.render("register.html", error ="username is avilable, select other name or login!!!")
+                    return
+        sql = "INSERT INTO `user` (`name`, `pass`, `secret`) VALUES ( %s, %s , %s)"
+        test = db.coneectdb()
+        mycursor = test.cursor()
+        val = (username,password, "emty")
+        mycursor.execute(sql, val)
+        test.commit()
+        self.render("login.html",error="user registred")                 
+            
 
 class LoginHandler(BaseHandler):
     def get(self):
-        self.render("login.html",)
+        self.render("login.html",error='',)
     def post(self):
-        self.set_secure_cookie("user", self.get_argument("name"))
-        self.redirect("/")
+        username = self.get_argument("name")
+        print(username)
+        password = self.get_argument("password")
+        sql= "SELECT * FROM `user` WHERE `name` = %s "
+        test = db.coneectdb()
+        mycursor = test.cursor()
+        mycursor.execute(sql, (username,))
+        myresult = mycursor.fetchall()
+        for x in myresult:
+            if x[0] == username and x[1] == password :
+                self.set_secure_cookie("user", self.get_argument("name"))
+                self.redirect("/")
+
+            self.render("login.html", error = "incorrect username or password")
 
 ##########username #########
 class UsernameFinder(BaseHandler):
@@ -195,6 +243,7 @@ def main():
     application = tornado.web.Application([
     (r"/", MainHandler),
     (r"/login", LoginHandler),
+    (r"/register",RegisterHandler),
     (r"/a/message/new", MessageNewHandler),
     (r"/a/message/updates", MessageUpdatesHandler),    
     ], cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>register</title>
+    <link rel="stylesheet" href="{{ static_url("logins.css") }}" type="text/css">
+  </head>
+  <body>
+        <div class="login">
+            <h2>register</h2>
+            <form action="/register" method="post">
+                <div class="input-group">
+                    <input type="text" name="name" required="required">
+                    <span>Username</span>
+                </div>
+                <div class="input-group">
+                    <input type="text" name="password" required="required">
+                    <span>Password</span>
+                </div>            
+                <div class="input-group">
+                    <input type="submit" value="register">
+                </div>
+                <div>
+                    <span>or login with your account or freefeed account</span>
+                </div> 
+                <div class="input-group">
+                    <span>{{ error }}</span>
+                </div>
+            </form>    
+            <div class="input-group">
+                <form action ="/login" method="GET">
+                    <div class="input-group">
+                        <input type="submit" value="login">
+                    </div>
+                </form>
+            </div>
+            
+            
+                
+            
+        </div>
+    </body>
+</html>
