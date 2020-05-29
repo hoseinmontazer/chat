@@ -9,7 +9,7 @@ import requests
 import json
 import pycurl
 import ast
-from PIL import Image
+#from PIL import Image
 import sys
 import mysql.connector
 
@@ -25,7 +25,7 @@ define("debug", default=True, help="run in debug mode")
 class db:
     def coneectdb():
         mydb = mysql.connector.connect(
-        host="127.0.0.1",
+        host="172.17.0.4",
         user="hoseinm",
         passwd="123456",
         database="chat",
@@ -166,10 +166,22 @@ class UsernameFinder(BaseHandler):
             if k == 'users':
                 for i,j in v.items():
                     if i=='screenName':
-                        return(j)    
-
-
-######## find avatatr  function
+                        return(j)
+    # find subscriber  function
+    def findSubscriber(self):
+        api_url_base = "https://freefeed.net"
+        read_my_info = "/v2/users/whoami"
+        api_token=tornado.escape.xhtml_escape(self.current_user)
+        headers = {'x-authentication-token':api_token}
+        response = requests.get(api_url_base+read_my_info,headers=headers)
+        content= response.json()
+        for k,v in content.items():            
+            if k == 'subscribers':
+                for n in v:
+                    for z,w in n.items():
+                        if z == 'screenName':
+                          print (w)    
+    # find avatatr  function
     def find_Avatr(self):
         api_url_base = "https://freefeed.net"
         read_my_info = "/v2/users/whoami"
@@ -192,6 +204,7 @@ class MessageNewHandler(BaseHandler):
     def post(self): 
         img_url = UsernameFinder.find_Avatr(self)
         name = UsernameFinder.find_screenName(self)
+        subscriber= UsernameFinder.findSubscriber(self)
         body= self.get_argument("body")
         if not img_url:
             img_url = "https://raw.githubusercontent.com/FreeFeed/freefeed-react-client/e8b6d86f227cc66903e7a06cd9e06cf2e7af3242/assets/images/default-userpic.svg"
@@ -199,18 +212,14 @@ class MessageNewHandler(BaseHandler):
             name =tornado.escape.xhtml_escape(self.current_user)
 
 
-        message = {"id": str(uuid.uuid4()), "img_url": str(img_url) ,"name": name ,"body":body}
-        #message = {"id": str(uuid.uuid4()), "img_url":img_url ,"name": name ,"body":body}
-        
+        message = {"id": str(uuid.uuid4()), "img_url": str(img_url) ,"name": name ,"body":body, "subscriber":subscriber }        
         message["html"] = tornado.escape.to_unicode(
-            self.render_string("message.html", message= message)
+            self.render_string("message.html", message= message )
         )
         
         if self.get_argument("next", None):
             self.redirect(self.get_argument("next"))
         else:
-            #name = tornado.escape.xhtml_escape(self.current_user)
-            print(type(message))
             self.write(message)
         global_message_buffer.add_message(message)
 

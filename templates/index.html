@@ -22,7 +22,11 @@
           </div>
 
           <div class="row main-content">
-              <div class="col-12 col-md-3 users-list"><!--users--></div>
+              <div class="col-12 col-md-3 users-list">
+                {% for message in messages %}
+                {% module Template("subscriber.html", message=message) %}
+                {% end %}
+              </div>
               <div class="col-12 col-md-9 messages-box">
 
                   <div id="inbox" class="message col-12">
