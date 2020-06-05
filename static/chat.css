@@ -41,6 +41,8 @@ td {
 
         #body .main-content .users-list {
             background-color: #eee;
+            overflow: scroll;
+            height: 100%;
         }
 .chat-footer {
     display: block;
@@ -53,7 +55,7 @@ td {
 #inbox {
     padding: 40px;
     overflow:   auto;
-    position:   absolute;
+    position:   relative;
     bottom:     50px;
 }
 #input {
