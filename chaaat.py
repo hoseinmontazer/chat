@@ -78,7 +78,10 @@ class MainHandler(BaseHandler):
             return
         #name = tornado.escape.xhtml_escape(self.current_user)
         #print ("Hello, " + name)
-        self.render("index.html", messages=global_message_buffer.cache)
+        items= UsernameFinder.findSubscriber(self)
+        print(items)
+        print(type(items))
+        self.render("index.html", messages=global_message_buffer.cache, items=items)
         
 
 class RegisterHandler(BaseHandler):
@@ -151,7 +154,6 @@ class UsernameFinder(BaseHandler):
             if k == 'users':
                 for i,j in v.items():
                     if i=='username':
-                        print (j)
                         return(j)
     
     # find screan name  function
@@ -175,12 +177,17 @@ class UsernameFinder(BaseHandler):
         headers = {'x-authentication-token':api_token}
         response = requests.get(api_url_base+read_my_info,headers=headers)
         content= response.json()
-        for k,v in content.items():            
+        subs=[]
+        for k,v in content.items():
+            print(k)            
             if k == 'subscribers':
                 for n in v:
-                    for z,w in n.items():
-                        if z == 'screenName':
-                          print (w)    
+                    for p,l in n.items():
+                        if p == 'screenName':
+                            subs.append(l)
+        return subs                    
+        
+
     # find avatatr  function
     def find_Avatr(self):
         api_url_base = "https://freefeed.net"
@@ -204,7 +211,7 @@ class MessageNewHandler(BaseHandler):
     def post(self): 
         img_url = UsernameFinder.find_Avatr(self)
         name = UsernameFinder.find_screenName(self)
-        subscriber= UsernameFinder.findSubscriber(self)
+        
         body= self.get_argument("body")
         if not img_url:
             img_url = "https://raw.githubusercontent.com/FreeFeed/freefeed-react-client/e8b6d86f227cc66903e7a06cd9e06cf2e7af3242/assets/images/default-userpic.svg"
@@ -212,11 +219,13 @@ class MessageNewHandler(BaseHandler):
             name =tornado.escape.xhtml_escape(self.current_user)
 
 
-        message = {"id": str(uuid.uuid4()), "img_url": str(img_url) ,"name": name ,"body":body, "subscriber":subscriber }        
+        message = {"id": str(uuid.uuid4()), "img_url": str(img_url) ,"name": name ,"body":body }        
+        
         message["html"] = tornado.escape.to_unicode(
-            self.render_string("message.html", message= message )
+            self.render_string("message.html", message= message  )
         )
         
+        #self.render_string("message.html", message= message )
         if self.get_argument("next", None):
             self.redirect(self.get_argument("next"))
         else:

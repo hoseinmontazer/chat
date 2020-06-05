@@ -118,5 +118,7 @@ var updater = {
         $("#inbox").append(node);
     
         node.slideDown();
+
+        
     }
 };

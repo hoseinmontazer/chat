@@ -23,9 +23,9 @@
 
           <div class="row main-content">
               <div class="col-12 col-md-3 users-list">
-                {% for message in messages %}
-                {% module Template("subscriber.html", message=message) %}
-                {% end %}
+                   {%for item in items%}
+                   <li><a href="{{escape(item)}}">{{escape (item) }}</a></li>
+                    {% end %}
               </div>
               <div class="col-12 col-md-9 messages-box">
 
